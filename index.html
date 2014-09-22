@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+<script type="text/javascript" src="jQuery.js"></script>
+
+<!--Javascript template for main game screen-->
+<script type="text/template" id="game_screen">
+	<div id="title">What is the capital of:</div>
+	<button id="flashcard"></button>
+</script>
+
+<!--Javascript template for main end screen-->
+<script type="text/template" id="end_screen">
+	<div id="title">All Done!</div>
+	<button id="replay_button">Play again!</button>
+	<button id="done">No thanks!</button>
+</script>
+
+<!--Javascript template for main title screen-->
+<script type="text/template" id="title_screen">
+	<div id="title">Ready to practice your world capitals?</div>
+	<button id="start_button">Get Started!</button>
+</script>
+
+<!--Relevant functions for the page-->
+<script>
+
+/*Main function to play the game*/
+var play = function(){
+
+	$.getJSON("countries.json",function(data){
+		var countries = data['countries']; 
+		var countries_length = countries.length; 
+		var question_length = 10;
+
+		var questions = get_questions(countries_length,question_length);
+
+		/*Set the game screen*/
+		$("#main").html($("#game_screen").html());
+
+		/*Set first flashcard*/
+		var i = question_length * 2; 
+		var index = 10 - Math.ceil(i/2);
+		var obj = countries[questions[index]];
+		$("#flashcard").html(obj['name']);
+		$("#flashcard").css("background-color","#4148ab");
+		i--; 
+
+		/*Set next flashcards*/
+		$("#flashcard").on('click',function(){
+			/*As long as flashcards are remaining*/
+			if (i > 0){
+				var index = 10 - Math.ceil(i/2);
+				var obj = countries[questions[index]];
+				if (i % 2 == 0){
+					$("#flashcard").html(obj['name']);
+					$("#flashcard").css("background-color","#4148ab");
+					$("#title").html("What is the capital of:");
+				}else{
+					$("#flashcard").html(obj['capital']);
+					$("#flashcard").css("background-color","#a441ab");
+					$("#title").html("Answer:");
+				}
+				i--;	
+			}else{
+				/*If flashcards are not remaining, go to final screen*/
+				$("#main").html($("#end_screen").html());
+				$("#done").on('click',function(){
+					$("#main").html($("#title_screen").html());
+					$("#start_button").on('click',play);
+				});
+				$("#replay_button").on('click',play);
+			}
+		});
+
+	});
+}
+
+
+var get_questions = function(total_questions,question_length){
+
+	var questions = []; 
+
+	for (var i=0; i < question_length; i++){
+		var q_good = false; 
+		while (!q_good){
+			var q = Math.floor(Math.random() * (total_questions));
+			if (!(questions.indexOf(q) > -1)){
+				questions.push(q); 
+				q_good = true; 
+			}
+		}
+	}
+
+	return questions; 
+
+}
+
+/*Main stuff to load upon page load*/
+$(document).ready(function(){
+	$("#main").html($("#title_screen").html());
+
+	$("#start_button").on('click',play); 
+
+});
+</script>
+
+</head>
+<body>
+	<div id="headline">World Capitals Flashcard Practice</div>
+	<div id="main">
+	</div>
+</body>
+</html>
