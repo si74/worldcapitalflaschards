@@ -1,0 +1,56 @@
+/*Overall style*/
+@import url(//fonts.googleapis.com/css?family=Lato:300,400);
+
+body{
+	margin:0px;
+	background-color:#9670c9;
+	color:#fff;
+	font-family: 'Lato',sans-serif;
+}
+
+#main{
+	text-align:center;
+	min-width:15em;
+}
+
+#headline{
+	padding-top:3em;
+	padding-bottom:2em;
+	text-align:center;
+	font-size:2em;
+}
+
+#start_button{
+	margin-top:1em;
+	width:8em;
+	height:3em;
+	font-size:1em;
+	color:#fff;
+	background-color: #417dab;
+}
+
+#replay_button{
+	margin-top:1em;
+	width:8em;
+	height:3em;
+	font-size:1em;
+	color:#fff;
+	background-color: #48ab41;
+}
+
+#done{
+	margin-top:1em;
+	width:8em;
+	height:3em;
+	font-size:1em;
+	color:#fff;
+	background-color: #aba441;
+}
+
+#flashcard{
+	margin-top:1em;
+	width:13em;
+	height:8em;
+	font-size:1em;
+	color:#fff;
+}
