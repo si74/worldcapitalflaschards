@@ -19,13 +19,17 @@
 <!--Javascript template for main end screen-->
 <script type="text/template" id="end_screen">
 	<div id="title">All Done!</div>
-	<button id="replay_button">Play again!</button>
+	<button id="replay_button">Play again!</button><br/>
+	<div id="prompt">If you wish to play again, how many flaschards?</div><br/>
+	<input id="num_questions" type="text" /><br/><br/>
 	<button id="done">No thanks!</button>
 </script>
 
 <!--Javascript template for main title screen-->
 <script type="text/template" id="title_screen">
-	<div id="title">Ready to practice your world capitals?</div>
+	<div id="title">Ready to practice your world capitals?</div><br/><br/>
+	<div id="prompt">Please enter the number of flashcards:</div><br/>
+	<input type="text" id="number" /><br/>
 	<button id="start_button">Get Started!</button>
 </script>
 
@@ -33,21 +37,21 @@
 <script>
 
 /*Main function to play the game*/
-var play = function(){
+var play = function(num_questions){
 
 	$.getJSON("countries.json",function(data){
 		var countries = data['countries']; 
 		var countries_length = countries.length; 
-		var question_length = 10;
+		//var question_length = num_questions;
 
-		var questions = get_questions(countries_length,question_length);
+		var questions = get_questions(countries_length,num_questions);
 
 		/*Set the game screen*/
 		$("#main").html($("#game_screen").html());
 
 		/*Set first flashcard*/
-		var i = question_length * 2; 
-		var index = 10 - Math.ceil(i/2);
+		var i = num_questions * 2; 
+		var index = num_questions - Math.ceil(i/2);
 		var obj = countries[questions[index]];
 		$("#flashcard").html(obj['name']);
 		$("#flashcard").css("background-color","#4148ab");
@@ -57,7 +61,7 @@ var play = function(){
 		$("#flashcard").on('click',function(){
 			/*As long as flashcards are remaining*/
 			if (i > 0){
-				var index = 10 - Math.ceil(i/2);
+				var index = num_questions - Math.ceil(i/2);
 				var obj = countries[questions[index]];
 				if (i % 2 == 0){
 					$("#flashcard").html(obj['name']);
@@ -70,13 +74,20 @@ var play = function(){
 				}
 				i--;	
 			}else{
+				console.log(i);
 				/*If flashcards are not remaining, go to final screen*/
 				$("#main").html($("#end_screen").html());
 				$("#done").on('click',function(){
 					$("#main").html($("#title_screen").html());
-					$("#start_button").on('click',play);
+					$("#start_button").on('click',function(){
+						var num_questions = $('#number').val(); 
+						play(num_questions);
+					});
 				});
-				$("#replay_button").on('click',play);
+				$("#replay_button").on('click',function(){
+					var num_questions = $('#num_questions').val(); 
+					play(num_questions);
+				});
 			}
 		});
 
@@ -107,7 +118,11 @@ var get_questions = function(total_questions,question_length){
 $(document).ready(function(){
 	$("#main").html($("#title_screen").html());
 
-	$("#start_button").on('click',play); 
+	$("#start_button").on('click',function(){
+		var num_questions = $('#number').val(); 
+		play(num_questions);
+		console.log(num_questions);
+	}); 
 
 });
 </script>
